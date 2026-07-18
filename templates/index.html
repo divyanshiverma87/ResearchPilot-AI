@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResearchPilot AI - Your Intelligent Research Companion</title>
+    
+    <!-- Google Fonts: Outfit for Headings, Inter for Body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for sleek modern icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Favicon link pointing to the generated SVG -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    
+    <!-- Custom stylesheet link -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Premium background gradients -->
+    <div class="bg-gradient-orb orb-1"></div>
+    <div class="bg-gradient-orb orb-2"></div>
+    
+    <div class="app-container">
+        <!-- Main Sidebar / Control Panel -->
+        <aside class="sidebar glass-card">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="{{ url_for('static', filename='favicon.svg') }}" alt="ResearchPilot Logo" class="logo-img">
+                    <span class="logo-text">ResearchPilot <span class="logo-accent">AI</span></span>
+                </div>
+                <p class="sidebar-tagline">Navigate knowledge paths with Gemini</p>
+            </div>
+            
+            <form id="research-form" class="research-form">
+                <!-- Step 1: Input Topic -->
+                <div class="form-group">
+                    <label for="topic">
+                        <i class="fa-solid fa-compass form-icon"></i> Research Topic
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="topic" name="topic" placeholder="e.g., Quantum Computing, Kafka vs RabbitMQ..." required autocomplete="off">
+                        <button type="button" id="clear-input-btn" class="clear-input-btn" title="Clear input">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Depth Selection (Using premium card design instead of simple dropdown) -->
+                <div class="form-group">
+                    <label><i class="fa-solid fa-sliders form-icon"></i> Research Depth</label>
+                    <div class="depth-selector-grid">
+                        <label class="depth-card active" for="depth-quick">
+                            <input type="radio" id="depth-quick" name="depth" value="quick" checked>
+                            <span class="depth-card-content">
+                                <i class="fa-solid fa-bolt depth-icon"></i>
+                                <span class="depth-title">Quick Summary</span>
+                                <span class="depth-desc">~400-700 words</span>
+                            </span>
+                        </label>
+                        
+                        <label class="depth-card" for="depth-detailed">
+                            <input type="radio" id="depth-detailed" name="depth" value="detailed">
+                            <span class="depth-card-content">
+                                <i class="fa-solid fa-list-check depth-icon"></i>
+                                <span class="depth-title">In-Depth</span>
+                                <span class="depth-desc">~1000-1500 words</span>
+                            </span>
+                        </label>
+                        
+                        <label class="depth-card" for="depth-comprehensive">
+                            <input type="radio" id="depth-comprehensive" name="depth" value="comprehensive">
+                            <span class="depth-card-content">
+                                <i class="fa-solid fa-graduation-cap depth-icon"></i>
+                                <span class="depth-title">Comp. Guide</span>
+                                <span class="depth-desc">~1800-2500 words</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="generate-btn" class="btn btn-primary btn-generate">
+                    <span class="btn-text">Launch Research</span>
+                    <i class="fa-solid fa-paper-plane btn-icon"></i>
+                </button>
+            </form>
+            
+            <!-- Quick Suggestion Pill Links -->
+            <div class="suggestions-container">
+                <span class="suggestions-label">Popular Topics:</span>
+                <div class="suggestion-pills">
+                    <button type="button" class="suggestion-pill">Docker & Kubernetes</button>
+                    <button type="button" class="suggestion-pill">Machine Learning Basics</button>
+                    <button type="button" class="suggestion-pill">Rust vs C++</button>
+                    <button type="button" class="suggestion-pill">REST APIs vs GraphQL</button>
+                </div>
+            </div>
+
+            <!-- Research History Section (managed dynamically via JS) -->
+            <div class="recent-searches-container" id="recent-searches-container" style="display: none;">
+                <div class="recent-searches-header-row">
+                    <span class="recent-searches-label"><i class="fa-solid fa-clock-rotate-left form-icon"></i> Research History</span>
+                    <button type="button" id="clear-history-btn" class="clear-history-btn" title="Clear History">Clear</button>
+                </div>
+                <div class="recent-searches-list" id="recent-searches-list">
+                    <!-- Dynamic buttons injected by JavaScript -->
+                </div>
+            </div>
+            
+            <footer class="sidebar-footer">
+                <p>AI-Powered Research Assistant</p>
+                {% if not api_key_configured %}
+                <div class="key-warning">
+                    <i class="fa-solid fa-triangle-exclamation"></i> API key missing. Configure `.env`
+                </div>
+                {% endif %}
+            </footer>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Dashboard Header -->
+            <header class="dashboard-header">
+                <div class="header-branding">
+                    <h1 class="page-title">ResearchPilot AI</h1>
+                    <p class="page-subtitle">Your Intelligent Research Companion for Fast, Structured and AI-Powered Research.</p>
+                </div>
+                
+                <div class="header-actions-wrapper">
+                    <!-- Theme Toggle -->
+                    <button id="theme-toggle-btn" class="btn btn-secondary btn-icon-only theme-toggle-btn" title="Toggle Light/Dark Theme">
+                        <i class="fa-solid fa-moon theme-icon-dark"></i>
+                        <i class="fa-solid fa-sun theme-icon-light" style="display: none;"></i>
+                        <span class="btn-tooltip">Toggle Theme</span>
+                    </button>
+
+                    <!-- Action Buttons Toolbar -->
+                    <div class="action-toolbar" id="action-toolbar" style="display: none;">
+                        <button id="copy-btn" class="btn btn-secondary btn-icon-only" title="Copy Report to Clipboard">
+                            <i class="fa-regular fa-copy"></i>
+                            <span class="btn-tooltip">Copy Report</span>
+                        </button>
+                        <button id="download-btn" class="btn btn-secondary btn-icon-only" title="Download Report as Markdown">
+                            <i class="fa-regular fa-file-lines"></i>
+                            <span class="btn-tooltip">Download .md</span>
+                        </button>
+                        <button id="clear-btn" class="btn btn-danger btn-icon-only" title="Clear Results">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span class="btn-tooltip">Clear Screen</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 1. Default Welcome State -->
+            <section id="welcome-state" class="welcome-state glass-card">
+                <div class="welcome-graphic">
+                    <i class="fa-solid fa-user-astronaut astronaut-icon"></i>
+                </div>
+                <h2>Ready for Takeoff?</h2>
+                <p>Enter a topic in the control panel to generate a structured, professional, AI-powered learning syllabus. Your results will automatically split into a clean, easy-to-read grid of 9 cards.</p>
+                <div class="feature-grid-hints">
+                    <div class="hint-item">
+                        <i class="fa-solid fa-book-open"></i>
+                        <h4>Study Guides</h4>
+                        <p>Complete overviews and revisions</p>
+                    </div>
+                    <div class="hint-item">
+                        <i class="fa-solid fa-code-pull-request"></i>
+                        <h4>Real Use Cases</h4>
+                        <p>Practical apps and patterns</p>
+                    </div>
+                    <div class="hint-item">
+                        <i class="fa-solid fa-gamepad"></i>
+                        <h4>Interactive Quizzes</h4>
+                        <p>Evaluate your retention instantly</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Loading State with beautiful typing and skeleton loader -->
+            <section id="loading-state" class="loading-state" style="display: none;">
+                <div class="loading-card glass-card">
+                    <div class="spinner-container">
+                        <div class="glowing-spinner"></div>
+                        <i class="fa-solid fa-rocket loading-rocket"></i>
+                    </div>
+                    <h3 class="loading-status">Plotting Course and Synthesizing Knowledge...</h3>
+                    
+                    <!-- AI Generation Typing Simulation -->
+                    <div class="typing-container">
+                        <span class="typing-prefix">> Gemini is writing: </span>
+                        <span id="typing-text" class="typing-text"></span>
+                        <span class="typing-cursor">|</span>
+                    </div>
+
+                    <!-- Progress bar -->
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                </div>
+                
+                <!-- Skeleton representation of the 9 cards -->
+                <div class="skeleton-grid">
+                    <div class="skeleton-card glass-card"></div>
+                    <div class="skeleton-card glass-card"></div>
+                    <div class="skeleton-card glass-card"></div>
+                </div>
+            </section>
+
+            <!-- 3. Error Alert Container -->
+            <div id="error-alert" class="error-alert glass-card" style="display: none;">
+                <i class="fa-solid fa-circle-exclamation error-icon"></i>
+                <div class="error-details">
+                    <h4>Research Interrupted</h4>
+                    <p id="error-message">Something went wrong. Please check your network and API key.</p>
+                </div>
+                <button id="close-error-btn" class="close-error-btn">&times;</button>
+            </div>
+
+            <!-- 4. Report Grid State (9 dynamic cards) -->
+            <section id="report-results" class="report-results" style="display: none;">
+                <!-- Header with topic title & selected depth -->
+                <div class="report-meta glass-card">
+                    <div class="meta-info">
+                        <span class="meta-label">Research Dossier</span>
+                        <h2 id="result-topic-title" class="result-topic-title">Selected Topic</h2>
+                    </div>
+                    <div class="meta-badge-group">
+                        <span id="result-depth-badge" class="badge">In-depth</span>
+                        <span id="result-word-badge" class="badge secondary">Analyzing text...</span>
+                    </div>
+                </div>
+
+                <!-- The 9 Structured Section Cards -->
+                <div class="report-grid">
+                    <!-- 1. Overview -->
+                    <div class="report-card glass-card" data-section="overview">
+                        <div class="card-header">
+                            <div class="header-left">
+                                <i class="fa-solid fa-magnifying-glass-chart card-icon"></i>
+                                <h3>Overview</h3>
+                            </div>
+                            <button class="expand-card-btn" title="Expand card"><i class="fa-solid fa-expand"></i></button>
+                        </div>
+                        <div class="card-body markdown-content" id="section-overview"></div>
+                    </div>
+
+                    <!-- 2. Key Concepts -->
+                    <div class="report-card glass-card" data-section="keyConcepts">
+                        <div class="card-header">
+                            <div class="header-left">
+                                <i class="fa-solid fa-brain card-icon"></i>
+                                <h3>Key Concepts</h3>
+                            </div>
+                            <button class="expand-card-btn" title="Expand card"><i class="fa-solid fa-expand"></i></button>
+                        </div>
+                        <div class="card-body markdown-content" id="section-keyConcepts"></div>
+                    </div>
+
+                    <!-- 3. Real World Applications -->
+                    <div class="report-card glass-card" data-section="realWorldApplications">
+                        <div class="card-header">
+                            <div class="header-left">
+                                <i class="fa-solid fa-cubes card-icon"></i>
+                                <h3>Real World Applications</h3>
+                            </div>
+                            <button class="expand-card-btn" title="Expand card"><i class="fa-solid fa-expand"></i></button>
+                        </div>
+                        <div class="card-body markdown-content" id="section-realWorldApplications"></div>
+                    </div>
+
+                    <!-- 4. Latest Trends -->
+                    <div class="report-card glass-card" data-section="latestTrends">
+                        <div class="card-header">
+                            <div class="header-left">
+                                <i class="fa-solid fa-chart-line card-icon"></i>
+                                <h3>Latest Trends</h3>
+                            </div>
+                            <button class="expand-card-btn" title="Expand card"><i class="fa-solid fa-expand"></i></button>
+                        </div>
+                        <div class="card-body markdown-content" id="section-latestTrends"></div>
+                    </div>
+
+                    <!-- 5. Interview Questions -->
+                    <div class="report-card glass-card" data-section="interviewQuestions">
+                        <div class="card-header">
+                            <div class="header-left">
+                                <i class="fa-solid fa-circle-question card-icon"></i>
+                                <h3>Interview Questions</h3>
+                            </div>
+                            <button class="expand-card-btn" title="Expand card"><i class="fa-solid fa-expand"></i></button>
+                        </div>
+                        <div class="card-body markdown-content" id="section-interviewQuestions"></div>
+                    </div>
+
+                    <!-- 6. Learning Resources -->
+                    <div class="report-card glass-card" data-section="learningResources">
+                        <div class="card-header">
+                            <div class="header-left">
+                                <i class="fa-solid fa-book-bookmark card-icon"></i>
+                                <h3>Learning Resources</h3>
+                            </div>
+                            <button class="expand-card-btn" title="Expand card"><i class="fa-solid fa-expand"></i></button>
+                        </div>
+                        <div class="card-body markdown-content" id="section-learningResources"></div>
+                    </div>
+
+                    <!-- 7. Quick Revision Notes -->
+                    <div class="report-card glass-card" data-section="quickRevisionNotes">
+                        <div class="card-header">
+                            <div class="header-left">
+                                <i class="fa-solid fa-note-sticky card-icon"></i>
+                                <h3>Quick Revision Notes</h3>
+                            </div>
+                            <button class="expand-card-btn" title="Expand card"><i class="fa-solid fa-expand"></i></button>
+                        </div>
+                        <div class="card-body markdown-content" id="section-quickRevisionNotes"></div>
+                    </div>
+
+                    <!-- 8. Quiz -->
+                    <div class="report-card glass-card" data-section="quiz">
+                        <div class="card-header">
+                            <div class="header-left">
+                                <i class="fa-solid fa-lightbulb card-icon"></i>
+                                <h3>Quiz</h3>
+                            </div>
+                            <button class="expand-card-btn" title="Expand card"><i class="fa-solid fa-expand"></i></button>
+                        </div>
+                        <div class="card-body markdown-content" id="section-quiz"></div>
+                    </div>
+
+                    <!-- 9. Suggested Next Topics -->
+                    <div class="report-card glass-card" data-section="suggestedNextTopics">
+                        <div class="card-header">
+                            <div class="header-left">
+                                <i class="fa-solid fa-arrow-right-long card-icon"></i>
+                                <h3>Suggested Next Topics</h3>
+                            </div>
+                            <button class="expand-card-btn" title="Expand card"><i class="fa-solid fa-expand"></i></button>
+                        </div>
+                        <div class="card-body markdown-content" id="section-suggestedNextTopics"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal view for expanded sections -->
+    <div id="expanded-modal" class="expanded-modal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <div class="modal-header-title">
+                    <i class="fa-solid fa-expand modal-icon"></i>
+                    <h3 id="modal-title-text">Expanded View</h3>
+                </div>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body markdown-content" id="modal-body-content"></div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications (Copied message, downloaded message) -->
+    <div id="toast" class="toast glass-card">
+        <i class="fa-solid fa-circle-check toast-icon"></i>
+        <span id="toast-message">Report copied successfully!</span>
+    </div>
+
+    <!-- Custom main script -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -54,18 +54,27 @@ The project is designed to make learning and research more organized and easier 
 ## 📸 Screenshots
 
 ### Home Page
+The main ResearchPilot AI interface where users enter a research topic and select the desired research depth.
+It provides a clean dashboard for starting a new research session.
 
 ![ResearchPilot AI Home](home.png)
 
 ### Research Configuration
+Shows the AI research generation process after a topic and research depth are selected.
+The interface provides visual feedback while Gemini generates the research content.
 
 ![Research Configuration](research.png)
 
 ### Generated Research Report
+Displays the generated research report with key sections such as Overview and Key Concepts.  
+It demonstrates how ResearchPilot AI transforms a topic into structured, easy-to-read learning content.
+
 
 ![Research Result](result.png)
 
 ### Research Report – Additional View
+Shows Learning Resources, Quick Revision Notes, Quiz, and Suggested Next Topics for deeper learning and self-assessment.
+
 
 ![Research Result](result2.png)
 

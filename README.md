@@ -67,7 +67,7 @@ The project is designed to make learning and research more organized and easier 
 
 ### Research Report – Additional View
 
-![Research Result](result-2.png)
+![Research Result](result2.png)
 
 ---
 

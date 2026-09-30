@@ -1,96 +1,95 @@
 # ResearchPilot AI 🚀
 
-ResearchPilot AI is an AI-powered research assistant built with **Python, Flask, and Google Gemini API**.
+> **An AI-powered research assistant for structured learning, exploration, and interview preparation.**
 
-It helps users explore any topic by generating a structured research report with key concepts, real-world applications, interview questions, learning resources, quick revision notes, quizzes, and suggested next topics.
+ResearchPilot AI helps users research any topic by generating a structured, easy-to-read report using the **Google Gemini API**.
 
-The project is designed to make learning and research more organized and easier to explore.
-
-> **Project Status:** Currently available for local use. Deployment is planned for a future version.
+Instead of providing only a simple AI response, the application organizes research into meaningful sections such as **key concepts, real-world applications, latest trends, interview questions, learning resources, revision notes, quizzes, and suggested next topics**.
 
 ---
 
 ## ✨ Features
 
-- 🔍 AI-powered research on any topic
-- ⚡ Multiple research depths:
+- 🔍 **AI-Powered Research** — Generate research reports on any topic
+- ⚡ **Three Research Depths**
   - Quick Summary
   - In-Depth Analysis
   - Comprehensive Guide
-- 📚 Structured research reports
-- 💡 Key concepts and real-world applications
-- 💼 Topic-specific interview questions
-- 📖 Learning resources
-- 📝 Quick revision notes
-- 🧠 Interactive quiz
-- 🔗 Suggested next topics
-- 📋 Copy generated report
-- 📥 Download report in Markdown format
-- 🌙 Responsive dark-themed user interface
+- 📚 **Structured Reports** — Organized into clearly defined sections
+- 💡 **Key Concepts** — Understand the fundamentals of a topic
+- 🌍 **Real-World Applications** — Explore practical use cases
+- 📈 **Latest Trends** — Discover current developments related to the topic
+- 💼 **Interview Questions** — Prepare for technical interviews
+- 📖 **Learning Resources** — Get relevant resources for further study
+- 📝 **Quick Revision Notes** — Review important points quickly
+- 🧠 **Interactive Quiz** — Test your understanding
+- 🔗 **Suggested Next Topics** — Continue learning logically
+- 📋 **Copy Report** — Copy the generated report instantly
+- 📥 **Download as Markdown** — Save reports for later use
+- 🌙 **Modern Dark UI** — Responsive and user-friendly interface
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Backend
-- Python
-- Flask
-
-### AI
-- Google Gemini API
-- Gemini 2.5 Flash
-
-### Frontend
-- HTML5
-- CSS3
-- JavaScript (ES6+)
-
-### Libraries
-- python-dotenv
-- Google Generative AI
+| Layer | Technologies |
+|---|---|
+| **Frontend** | HTML5, CSS3, JavaScript (ES6+) |
+| **Backend** | Python, Flask |
+| **AI** | Google Gemini API |
+| **Configuration** | python-dotenv |
+| **Output** | Markdown |
 
 ---
 
 ## 📸 Screenshots
 
-### Home Page
-The main ResearchPilot AI interface where users enter a research topic and select the desired research depth.
-It provides a clean dashboard for starting a new research session.
+### 🏠 Home Page
+
+The main interface where users enter a research topic and choose the desired research depth.
 
 ![ResearchPilot AI Home](home.png)
 
-### Research Configuration
-Shows the AI research generation process after a topic and research depth are selected.
-The interface provides visual feedback while Gemini generates the research content.
+### ⚙️ Research Generation
 
-![Research Configuration](research.png)
+Shows the research generation process with visual feedback while the AI creates the report.
 
-### Generated Research Report
-Displays the generated research report with key sections such as Overview and Key Concepts.  
-It demonstrates how ResearchPilot AI transforms a topic into structured, easy-to-read learning content.
+![Research Generation](research.png)
 
+### 📄 Generated Research Report
 
-![Research Result](result.png)
+Displays the generated report with sections such as **Overview** and **Key Concepts**, demonstrating how the application transforms a topic into structured learning content.
 
-### Research Report – Additional View
-Shows Learning Resources, Quick Revision Notes, Quiz, and Suggested Next Topics for deeper learning and self-assessment.
+![Generated Research Report](result.png)
 
+### 📚 Additional Report Sections
 
-![Research Result](result2.png)
+Shows **Learning Resources, Quick Revision Notes, Quiz, and Suggested Next Topics**, extending the report beyond basic explanations.
+
+![Additional Report Sections](result2.png)
 
 ---
 
 ## 🔄 How It Works
 
 ```text
-User enters a topic
-        ↓
-Selects research depth
-        ↓
-Flask Backend
-        ↓
-Google Gemini API
-        ↓
-AI-generated research report
-        ↓
-User can read, copy or download the report
+                User
+                 │
+                 ▼
+          Enter Research Topic
+                 │
+                 ▼
+        Select Research Depth
+                 │
+                 ▼
+          Flask Backend
+                 │
+                 ▼
+         Google Gemini API
+                 │
+                 ▼
+      Structured Research Report
+                 │
+        ┌────────┼────────┐
+        ▼        ▼        ▼
+      Read     Copy    Download
